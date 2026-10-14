@@ -13,38 +13,46 @@ class beyza_afsin {
         String satir;
 
         while((satir= oku.readLine())!=null) {
-            int ilktag=satir.indexOf("<");
-            int sontag=satir.indexOf(">");
+            char[] harfler=satir.toCharArray();
+            boolean etiketIcinde=false;
+            String etiket="";
 
-            if(ilktag!=-1 && sontag!=-1){
-                String etiket=satir.substring(ilktag +1,sontag);
-                System.out.println("etiket bulundu: "+ etiket);
+            for(int i=0;i<harfler.lenght;i++){
+                char c=harfler[i];
 
-                if(etiket.equalsIgnoreCase("!DOCTYPE html") || etiket.equalsIgnoreCase("html")){
-                    if(pencere==null){
-                        pencere=new JFrame("web sayfasi");
-                        pencere.setSize(400,400);
-                        pencere.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                if(c=='<'){
+                    etiketIcinde=true;
+                    etiket="";
+                }else if(c=='>'){
+                    etiketIcinde=false;
 
-                        panel=new JPanel();
-                        pencere.add(panel);
+                    if(etiket.length()>0){
+                        System.out.println("bulunan etiket: " + etiket);
 
-                        pencere.setVisible(true);
-                        System.out.println("pencere olusturuldu");
+                        if(pencere==null){
+                            pencere= new JFrame("web sayfasi");
+                            pencere.setSize(400,500);
+                            pencere.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+                            panel= new JPanel();
+
+                            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+                            pencere.add(panel);
+
+                        }
+                    }
+                    else if(etiket.charAt(0)=='/'){
 
                     }
-                }
 
-                else if(etiket.toLowerCase().startsWith("label")){
-                    if(panel!=null){
-                        JLabel etiketYazi=new JLabel("sabit metin");
-                        panel.add(etiketYazi);
+                    else if(etiket.startsWith("h1") || etiket.startsWith("h2") || etiket.startsWith("h3") || etiket.startsWith("h4")|| etiket.startsWith("h5")|| etiket.startsWith("h6")){
+                        if(panel!=null){
+                            JLabel baslik= new JLabel("baslik metni ("+etiket+")");
+                            panel.add(baslik);
+                        }
                     }
-                }
-                else if(etiket.toLowerCase().startsWith("input") || etiket.toLowerCase().startsWith("textfield")){
-                    if(panel!=null){
-                        JTextField metinKutusu=new JTextField(15);
-                        panel.add(metinKutusu);
+                    else if(etiket.startsWith("button")){
+                        
                     }
                 }
             }
